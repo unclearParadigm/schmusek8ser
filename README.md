@@ -21,11 +21,41 @@ that can access the K8s API of your choice.
 
 ## Getting started
 
+### running `schmusek8ser`
+
 ```bash
 git clone https://github.com/unclearParadigm/schmusek8ser
 cd schmusek8ser
 pip install -r requirements.txt
 python3 -m main.py
+```
+
+### usage
+
+```bash
+
+# generate an API key that authenticates requests to schmusek8ser
+curl -X GET http://localhost:8080/apikey/new?for=testingapikey
+
+# schmusek8ser will generate a new API key for you
+# {
+#  "status_code": 200,
+#  "success": true,
+#  "payload": {
+#    "apiKey": "eyJ3aG9zZSI6ICJoZXJiZXJ0IiwgInRva2VuIjogInY/XCJXa0RcIidKdTlBJCRuWEVae1psKEpmXCJdTmNxQFM/LTJmMjlkNzg2LTdmOTUtNGI1MC1iNzA0LWJkNjIyZTJmOGE3MyJ9",
+#    "for": "testingapikey",
+#    "note": "This API key is not yet activated. Update the schmusek8ser configuration with this key"
+#  }
+# }
+
+# restart schmusek8ser with the newly added API key
+export SCHMUSEK8SER_AUTHORIZED_API_KEYS__0="eyJ3aG9zZSI6ICJoZXJiZXJ0IiwgInRva2VuIjogInY/XCJXa0RcIidKdTlBJCRuWEVae1psKEpmXCJdTmNxQFM/LTJmMjlkNzg2LTdmOTUtNGI1MC1iNzA0LWJkNjIyZTJmOGE3MyJ9"
+python3 -m main.py
+
+# restart a deployment (and force pull image) for a deployment called "io-rtrace-apps-reddit" in namespace "default" 
+curl --request POST \
+  --url 'http://localhost:8080/bump?namespace=default&deployment=io-rtrace-apps-reddit' \
+  --header 'X-API-KEY: eyJ3aG9zZSI6ICJtZSIsICJ0b2tlbiI6ICJmWUwpMlhMYFpMWmNuNG9EKUBdK3VGeSxtd0I1VDJUNi04Mzk0MWQ0Ni1jYWU4LTQ1N2YtODhkMi1mNzc0NzJiNzMyODgifQ=='
 ```
 
 ### Configuration
