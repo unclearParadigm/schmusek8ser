@@ -1,4 +1,6 @@
-# schmusk8ser
+# schmusek8ser
+
+![schmuser-slogan](assets/schmuser.png)
 
 schmusek8ser (pronounced 'schmusekadser') is a Python REST API able to connect to Kubernetes clusters and forcing pulls of `:latest` tags of deployments in a cluster.
 This is particularily helpful for workloads which are mostly stateless and which you'd like to keep up to date with the latest tag automagically. No need to play around with [FluxCD](https://fluxcd.io),
