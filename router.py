@@ -22,7 +22,7 @@ from middleware.requires_auth_middleware import RequiresApiKeyAuthMiddleware
 # noinspection PyPep8Naming
 class Router(BaseHTTPRequestHandler):
     route_dict = {
-        '/health': HealthController(),
+        '/health': HealthController(static.k8s),
         '/bump': RequiresApiKeyAuthMiddleware(BumpController(static.k8s), static.config.AUTHORIZED_API_KEYS),
         '/restart': RequiresApiKeyAuthMiddleware(RestartController(static.k8s), static.config.AUTHORIZED_API_KEYS),
         '/apikey/new': ApiKeyController()
@@ -62,16 +62,20 @@ class Router(BaseHTTPRequestHandler):
         route_matches = [controller for route, controller in self.route_dict.items() if route.startswith(parsed_path)]
 
         if len(route_matches) == 0:
-            return ApiResponse(404, success=False, error='Requested resource not found.')
+            return (api_request,
+                    ApiResponse(404, success=False, error='Requested resource not found.'))
         if len(route_matches) > 1:
-            return ApiResponse(500, success=False, error='Ambiguous route matching multiple controllers.')
+            return (api_request,
+                    ApiResponse(500, success=False, error='Ambiguous route matching multiple controllers.'))
         if self.command not in route_matches[0].get_supported_methods():
-            return ApiResponse(405, success=False, error=f'Method {self.command} not allowed for route.')
+            return (api_request,
+                    ApiResponse(405, success=False, error=f'Method {self.command} not allowed for route.'))
 
         try:
             response = route_matches[0].handle(api_request)
             if response is None:
-                return api_request, ApiResponse(500, success=False, error='Endpoint not yet implemented')
+                return (api_request,
+                        ApiResponse(500, success=False, error='Endpoint not yet implemented'))
             return api_request, response
         except Exception as _:
             return (
