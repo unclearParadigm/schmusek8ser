@@ -10,10 +10,10 @@ class HealthController(object):
 
     def handle(self, _: ApiRequest) -> ApiResponse:
         if not self.k8s_session.is_connected():
-            return ApiResponse(500, success=False, error='Kubernetes API not connected. API not reachable, or unauthenticated')
+            return ApiResponse(500, success=False, error='Kubernetes API not reachable, or unauthenticated')
 
         return ApiResponse(200, success=True)
 
     @staticmethod
     def get_supported_methods() -> list:
-        return ['GET', 'POST']
+        return ['GET']
