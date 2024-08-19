@@ -1,6 +1,6 @@
-from poetry.vcs.git.backend import logger
+from loguru import logger
 
-import globals
+import static
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
 from k8sbusinesslogic.k8s_session import K8sSession
@@ -23,10 +23,10 @@ class BumpController(object):
         res = self.k8s_session.restart_deployment(deployment, namespace, request.api_key.who)
         if res.success:
             logger.info(f'Successfully triggered restart of deployment \'{deployment}\ in namespace \'{namespace}\'')
-            globals.ntfy.post(f'{namespace}/{deployment} bumped', f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
+            static.ntfy.post(f'{namespace}/{deployment} bumped', f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
             return ApiResponse(201, success=True)
         else:
-            logger.warn(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
+            logger.warning(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
             return ApiResponse(500, success=False, error='Failed to restart')
 
 

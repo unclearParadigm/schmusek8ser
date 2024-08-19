@@ -1,12 +1,13 @@
+import json
 import base64
 import binascii
-import json
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler
 
 from loguru import logger
 
-import globals
+import static
+
 from models.apikey import ApiKey
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
@@ -14,6 +15,7 @@ from models.apiresponse import ApiResponse
 from controllers.bump_controller import BumpController
 from controllers.health_controller import HealthController
 from controllers.apikey_controller import ApiKeyController
+from controllers.restart_controller import RestartController
 from middleware.requires_auth_middleware import RequiresApiKeyAuthMiddleware
 
 
@@ -21,7 +23,8 @@ from middleware.requires_auth_middleware import RequiresApiKeyAuthMiddleware
 class Router(BaseHTTPRequestHandler):
     route_dict = {
         '/health': HealthController(),
-        '/bump': RequiresApiKeyAuthMiddleware(BumpController(globals.k8s), globals.config.AUTHORIZED_API_KEYS),
+        '/bump': RequiresApiKeyAuthMiddleware(BumpController(static.k8s), static.config.AUTHORIZED_API_KEYS),
+        '/restart': RequiresApiKeyAuthMiddleware(RestartController(static.k8s), static.config.AUTHORIZED_API_KEYS),
         '/apikey/new': ApiKeyController()
     }
 

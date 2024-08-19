@@ -14,7 +14,7 @@ print(f"""
 if __name__ == '__main__':
     import socketserver
     from loguru import logger
-    from globals import config
+    from static import config
     from router import Router
 
     with socketserver.TCPServer((config.LISTEN_HOST, config.LISTEN_PORT), Router) as httpd:
