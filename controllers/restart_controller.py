@@ -18,24 +18,20 @@ class RestartController(object):
         deployment_query_param = request.query_params.get('deployment')
         if deployment_query_param is None:
             return ApiResponse(400, success=False, error='URL query parameter \'?deployment\' missing')
-        target_container_tag = request.query_params.get('tag')
-        if target_container_tag is None:
-            return ApiResponse(400, success=False, error='URL query parameter \'?tag\' missing')
 
-        namespace = str(list(namespace_query_param)[0])
-        deployment = str(list(deployment_query_param)[0])
-        target_container_tag = str(list(target_container_tag)[0])
+        namespace = list(namespace_query_param)[0]
+        deployment = list(deployment_query_param)[0]
 
         res = self.k8s_session.restart_deployment(deployment, namespace, request.api_key.who)
         if res.success:
             logger.info(f'Successfully triggered restart of deployment \'{deployment}\ in namespace \'{namespace}\'')
-            static.ntfy.post(f'{namespace}/{deployment} bumped',
-                             f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
+            static.ntfy.post(f'{namespace}/{deployment} bumped', f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
             return ApiResponse(201, success=True)
         else:
             logger.warning(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
             return ApiResponse(500, success=False, error='Failed to restart')
 
+
     @staticmethod
     def get_supported_methods() -> list:
-        return ['GET', 'POST']
+        return ['POST']
