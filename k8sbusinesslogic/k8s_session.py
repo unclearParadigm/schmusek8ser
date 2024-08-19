@@ -64,6 +64,7 @@ class K8sSession(object):
         except ApiException as e:
             return K8sOperationResult('patch_namespaced_deployment', success=True, error=str(e))
 
+
     def restart_deployment(self, deployment: str, namespace: str, who: str) -> K8sOperationResult:
         now = str(datetime.datetime.now(datetime.UTC).isoformat("T") + "Z")
         body = {
