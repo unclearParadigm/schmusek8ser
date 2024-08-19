@@ -50,7 +50,7 @@ class Router(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         self.wfile.write(bytes(json.dumps(res.__dict__, indent=2), 'utf8'))
-        logger.info(f'Request \'{req.trace_id}\' for route \'{req.trace_id}\' finished with status {res.status_code}')
+        logger.info(f'Request \'{req.trace_id}\' for route \'{req.request_url}\' finished with status {res.status_code}')
 
     def _handle_generic(self) -> (ApiRequest, ApiResponse):
         parsed_path = str(urlparse(self.path).path)
