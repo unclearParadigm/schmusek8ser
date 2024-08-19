@@ -3,8 +3,6 @@ from loguru import logger
 from config_utils import list_env_var
 
 
-
-
 class Config(object):
     # API CONFIG
     LISTEN_PORT = int(environ.get('SCHMUSEK8SER_LISTEN_PORT', 8080))
@@ -22,8 +20,3 @@ class Config(object):
 
     def __init__(self):
         logger.info('Initialized Schmuserk8tser Configuration')
-
-
-
-
-
