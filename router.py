@@ -6,11 +6,13 @@ from http.server import BaseHTTPRequestHandler
 
 import static
 import utils.log as log
+
 from models.apikey import ApiKey
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
 
 from controllers.bump_controller import BumpController
+from controllers.index_controller import IndexController
 from controllers.health_controller import HealthController
 from controllers.apikey_controller import ApiKeyController
 from controllers.restart_controller import RestartController
@@ -20,6 +22,7 @@ from middleware.requires_auth_middleware import RequiresApiKeyAuthMiddleware
 # noinspection PyPep8Naming
 class Router(BaseHTTPRequestHandler):
     route_dict = {
+        '/': IndexController(),
         '/health': HealthController(static.k8s),
         '/bump': RequiresApiKeyAuthMiddleware(BumpController(static.k8s), static.config.AUTHORIZED_API_KEYS),
         '/restart': RequiresApiKeyAuthMiddleware(RestartController(static.k8s), static.config.AUTHORIZED_API_KEYS),
@@ -52,6 +55,8 @@ class Router(BaseHTTPRequestHandler):
 
     def _handle_generic(self) -> (ApiRequest, ApiResponse):
         parsed_path = str(urlparse(self.path).path)
+        if parsed_path is '':
+            parsed_path = '/'
         query_params = parse_qs(urlparse(self.path).query)
         auth_api_key = self.try_parse_api_key()
 
