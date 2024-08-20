@@ -55,7 +55,7 @@ class Router(BaseHTTPRequestHandler):
 
     def _handle_generic(self) -> (ApiRequest, ApiResponse):
         parsed_path = str(urlparse(self.path).path)
-        if parsed_path is '':
+        if parsed_path == '':
             parsed_path = '/'
         query_params = parse_qs(urlparse(self.path).query)
         auth_api_key = self.try_parse_api_key()
