@@ -1,13 +1,13 @@
 import static
-
-from loguru import logger
-
+import utils.log as log
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
 from k8sbusinesslogic.k8s_session import K8sSession
+from controllers._base_controller import BaseController
 
+class RestartController(BaseController):
+    k8s_session: K8sSession
 
-class RestartController(object):
     def __init__(self, k8s_session: K8sSession):
         self.k8s_session = k8s_session
 
@@ -24,11 +24,11 @@ class RestartController(object):
 
         res = self.k8s_session.restart_deployment(deployment, namespace, request.api_key.who)
         if res.success:
-            logger.info(f'Successfully triggered restart of deployment \'{deployment}\ in namespace \'{namespace}\'')
+            log.info(f'Successfully triggered restart of deployment \'{deployment}\ in namespace \'{namespace}\'')
             static.ntfy.post(f'{namespace}/{deployment} bumped', f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
             return ApiResponse(201, success=True)
         else:
-            logger.warning(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
+            log.warning(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
             return ApiResponse(500, success=False, error='Failed to restart')
 
 

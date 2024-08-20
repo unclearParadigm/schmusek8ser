@@ -1,6 +1,7 @@
 from os import environ
-from loguru import logger
-from config_utils import list_env_var
+
+import utils.log as log
+from utils.config_utils import list_env_var
 
 
 class Config(object):
@@ -19,4 +20,4 @@ class Config(object):
     NTFY_TOPIC = str(environ.get('SCHMUSEK8SER_NTFY_TOPIC', 'schmusek8ser'))
 
     def __init__(self):
-        logger.info('Initialized Schmuserk8tser Configuration')
+        log.info('Initialized Schmuserk8tser Configuration')

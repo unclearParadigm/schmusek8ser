@@ -1,9 +1,12 @@
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
 from k8sbusinesslogic.k8s_session import K8sSession
+from controllers._base_controller import BaseController
 
 
-class BumpController(object):
+class BumpController(BaseController):
+    k8s_session: K8sSession
+
     def __init__(self, k8s_session: K8sSession):
         self.k8s_session = k8s_session
 

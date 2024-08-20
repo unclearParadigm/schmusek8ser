@@ -4,10 +4,8 @@ import binascii
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler
 
-from loguru import logger
-
 import static
-
+import utils.log as log
 from models.apikey import ApiKey
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
@@ -50,7 +48,7 @@ class Router(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         self.wfile.write(bytes(json.dumps(res.__dict__, indent=2), 'utf8'))
-        logger.info(f'Request \'{req.trace_id}\' for route \'{req.request_url}\' finished with status {res.status_code}')
+        log.info(f'Request \'{req.trace_id}\' for route \'{req.request_url}\' finished with status {res.status_code}')
 
     def _handle_generic(self) -> (ApiRequest, ApiResponse):
         parsed_path = str(urlparse(self.path).path)
@@ -58,7 +56,7 @@ class Router(BaseHTTPRequestHandler):
         auth_api_key = self.try_parse_api_key()
 
         api_request = ApiRequest(parsed_path, self.command, auth_api_key, query_params, self.try_parse_http_payload())
-        logger.info(f'Request \'{api_request.trace_id}\' received for route \'{parsed_path}\'')
+        log.info(f'Request \'{api_request.trace_id}\' received for route \'{parsed_path}\'')
         route_matches = [controller for route, controller in self.route_dict.items() if route.startswith(parsed_path)]
 
         if len(route_matches) == 0:
@@ -71,6 +69,7 @@ class Router(BaseHTTPRequestHandler):
             return (api_request,
                     ApiResponse(405, success=False, error=f'Method {self.command} not allowed for route.'))
 
+        # noinspection PyBroadException
         try:
             response = route_matches[0].handle(api_request)
             if response is None:

@@ -5,9 +5,10 @@ import secrets
 from models.apikey import ApiKey
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
+from controllers._base_controller import BaseController
 
 
-class ApiKeyController(object):
+class ApiKeyController(BaseController):
     def handle(self, api_request: ApiRequest) -> ApiResponse:
         for_api_key_param = api_request.query_params.get('for')
         if for_api_key_param is None:

@@ -1,4 +1,4 @@
-from loguru import logger
+import utils.log as log
 from models.apirequest import ApiRequest
 from models.apiresponse import ApiResponse
 
@@ -13,8 +13,8 @@ class RequiresApiKeyAuthMiddleware(object):
 
     def handle(self, api_request: ApiRequest) -> ApiResponse:
         if api_request.api_key is None or str(api_request.api_key) not in self.allowed_api_keys:
-            logger.warning(f'Request \'{api_request.trace_id}\' is not authenticated/authorized. Aborting.')
+            log.warning(f'Request \'{api_request.trace_id}\' is not authenticated/authorized. Aborting.')
             return ApiResponse(401, success=False, error='Unauthenticated/Unauthorized request.')
 
-        logger.info(f'Request \'{api_request.trace_id}\' authenticated by API Key {api_request.api_key.get_masked()}')
+        log.info(f'Request \'{api_request.trace_id}\' authenticated by API Key {api_request.api_key.get_masked()}')
         return self.controller.handle(api_request)
