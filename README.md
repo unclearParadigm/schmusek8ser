@@ -14,6 +14,7 @@ that can access the K8s API of your choice.
 - [x] 🖹 audit logging
 - [x] 📲 [ntfy.sh Notification dispatch support](https://ntfy.sh) for push notifications
 - [x] 🔄 allow restarts of Deployments with `imagePullPolicy: always`
+- [ ] ⬆️ functionality to bump a container image to a newer tag (e.g. from `:1.0.0` to `:2.0.0`)
 - [ ] 🐋 deployable as docker/podman container
 - [ ] 🇰 K8s manifests available
 - [ ] 👷 Helm charts
@@ -54,7 +55,7 @@ python3 -m main.py
 
 # restart a deployment (and force pull image) for a deployment called "io-rtrace-apps-reddit" in namespace "default" 
 curl --request POST \
-  --url 'http://localhost:8080/bump?namespace=default&deployment=io-rtrace-apps-reddit' \
+  --url 'http://localhost:8080/restart?namespace=default&deployment=io-rtrace-apps-reddit' \
   --header 'X-API-KEY: eyJ3aG9zZSI6ICJtZSIsICJ0b2tlbiI6ICJmWUwpMlhMYFpMWmNuNG9EKUBdK3VGeSxtd0I1VDJUNi04Mzk0MWQ0Ni1jYWU4LTQ1N2YtODhkMi1mNzc0NzJiNzMyODgifQ=='
 ```
 
