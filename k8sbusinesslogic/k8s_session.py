@@ -81,7 +81,7 @@ class K8sSession(object):
             }
         }
         try:
-            self.v1_apps.patch_namespaced_deployment(deployment, namespace, body, pretty='true')
+            x = self.v1_apps.patch_namespaced_deployment(deployment, namespace, body, pretty='true')
             return K8sOperationResult('restart_deployment', success=True, error=None)
         except ApiException as e:
-            return K8sOperationResult('restart_deployment', success=True, error=str(e))
+            return K8sOperationResult('restart_deployment', success=False, error=str(e))

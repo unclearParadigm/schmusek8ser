@@ -13,17 +13,17 @@ END = '\033[0m'
 
 
 def error(msg: str, indent=2) -> None:
-    log_entry = f'{" " * indent}{_get_time()} ❌ {msg}'
+    log_entry = f'{" " * indent}{_get_time()} | ERR | ❌ {msg}'
     print(log_entry)
 
 
 def success(msg: str, indent=2) -> None:
-    log_entry = f'{" " * indent}{_get_time()} ✅ {msg}'
+    log_entry = f'{" " * indent}{_get_time()} | INF | ✅ {msg}'
     print(log_entry)
 
 
 def warning(msg: str, indent=2) -> None:
-    log_entry = f'{" " * indent}{_get_time()} ⚠️  {msg}'
+    log_entry = f'{" " * indent}{_get_time()} | WRN | ⚠️  {msg}'
     print(log_entry)
 
 
@@ -33,8 +33,8 @@ def headline(msg: str, indent=0) -> None:
 
 
 def info(msg: str, indent=0) -> None:
-    log_entry = f'{" " * indent}{_get_time()} {msg}'
+    log_entry = f'{" " * indent}{_get_time()} | INF | {msg}'
     print(log_entry)
 
 def _get_time() -> str:
-    return str(datetime.datetime.now(datetime.UTC).isoformat("T") + "Z")
+    return str(datetime.datetime.now().isoformat(timespec='seconds'))

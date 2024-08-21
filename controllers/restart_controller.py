@@ -25,11 +25,16 @@ class RestartController(BaseController):
         res = self.k8s_session.restart_deployment(deployment, namespace, request.api_key.who)
         if res.success:
             log.info(f'Successfully triggered restart of deployment \'{deployment}\ in namespace \'{namespace}\'')
-            static.ntfy.post(f'{namespace}/{deployment} bumped', f'Successfully bumped {namespace}/{deployment} by \'{request.api_key.who}\'')
+            title = f'[restart] {namespace}/{deployment}'
+            message = f'Successfully restarted {namespace}/{deployment}. Initiated by \'{request.api_key.who}\''
+            static.notification_sinks.post(title, message)
             return ApiResponse(201, success=True)
         else:
             log.warning(f'Failed restart of \'{deployment}\ in namespace \'{namespace}\' because \'{res.error}\'')
-            return ApiResponse(500, success=False, error='Failed to restart')
+            title = f'[restart] {namespace}/{deployment}'
+            message = f'Failed to restart {namespace}/{deployment}. Initiated by \'{request.api_key.who}\''
+            static.notification_sinks.post(title, message)
+            return ApiResponse(500, success=False, error='Namespace or Deployment by name does not exist.')
 
 
     @staticmethod
