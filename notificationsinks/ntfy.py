@@ -3,17 +3,18 @@ from urllib.parse import urljoin
 
 from requests import HTTPError, Timeout, TooManyRedirects
 
+from notificationsinks.base_sink import BaseSink
 from utils import log
 from config import Config
 
 
-class Ntfy(object):
+class Ntfy(BaseSink):
     config: Config
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         self.config = config
 
-    def post(self, title: str, message: str):
+    def post(self, title: str, message: str) -> None:
         if not self.config.NTFY_ENABLE:
             return
 
@@ -22,11 +23,11 @@ class Ntfy(object):
             requests.post(ntfy_url, data=message, headers={'Title': title, 'Tags': 'smiley_cat'})
         except ConnectionError:
             log.error(f'Cannot connect to {self.config.NTFY_BASE_URL}. DNS request or TCP 3-way handshake failed')
-        except HTTPError as exc:
+        except HTTPError:
             log.error(f'Received Malformed HTTP response from {self.config.NTFY_BASE_URL}')
-        except Timeout as exc:
+        except Timeout:
             log.error(f'Ran into an Timeout while sending Notification to {self.config.NTFY_BASE_URL}')
-        except TooManyRedirects as exc:
+        except TooManyRedirects:
             log.error(f'Got redirected to often while sending notifications to {self.config.NTFY_BASE_URL}')
 
 
