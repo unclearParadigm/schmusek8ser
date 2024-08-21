@@ -5,6 +5,8 @@ from controllers._base_controller import BaseController
 
 
 class HealthController(BaseController):
+    k8s_session: K8sSession
+
     def __init__(self, k8s_session: K8sSession) -> None:
         self.k8s_session = k8s_session
 
