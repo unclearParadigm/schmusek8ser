@@ -62,7 +62,9 @@ class Router(BaseHTTPRequestHandler):
 
         api_request = ApiRequest(parsed_path, self.command, auth_api_key, query_params, self.try_parse_http_payload())
         log.info(f'Request \'{api_request.trace_id}\' received for route \'{parsed_path}\'')
-        route_matches = [controller for route, controller in self.route_dict.items() if route.startswith(parsed_path)]
+        route_matches = [controller for route, controller in self.route_dict.items() if route == parsed_path]
+        if len(route_matches) == 0:
+            route_matches = [controller for route, controller in self.route_dict.items() if route.startswith(parsed_path)]
 
         if len(route_matches) == 0:
             return (api_request,
